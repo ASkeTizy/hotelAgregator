@@ -1,0 +1,254 @@
+openapi: 3.0.1
+info:
+  title: Hotel API
+  description: API for working with hotels
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+paths:
+  /hotels:
+    get:
+      tags:
+        - hotels
+      summary: Get list of all hotels with brief information
+      operationId: getHotels
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HotelBrief'
+    post:
+      tags:
+        - hotels
+      summary: Create new hotel
+      operationId: createHotel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelCreate'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelBrief'
+  /hotels/{id}:
+    get:
+      tags:
+        - hotels
+      summary: Get detailed information about a specific hotel
+      operationId: getHotelById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelDetailed'
+  /search:
+    get:
+      tags:
+        - hotels
+      summary: Search hotels by parameters
+      operationId: searchHotels
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: brand
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: country
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: amenities
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HotelBrief'
+  /hotels/{id}/amenities:
+    post:
+      tags:
+        - hotels
+      summary: Add amenities to a hotel
+      operationId: addAmenitiesToHotel
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Successful operation
+  /histogram/{param}:
+    get:
+      tags:
+        - hotels
+      summary: Get count of hotels grouped by parameter value
+      operationId: getHistogram
+      parameters:
+        - name: param
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [brand, city, country, amenities]
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+components:
+  schemas:
+    HotelBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "DoubleTree by Hilton Minsk"
+        description:
+          type: string
+          example: "The DoubleTree by Hilton Hotel Minsk offers 193 luxurious rooms in the Belorussian capital and stunning views of Minsk city from the hotel's 20th floor ..."
+        address:
+          type: string
+          example: "9 Pobediteley Avenue, Minsk, 220004, Belarus"
+        phone:
+          type: string
+          example: "+375 17 309-80-00"
+    HotelDetailed:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "DoubleTree by Hilton Minsk"
+        description:
+          type: string
+          example: "The DoubleTree by Hilton Hotel Minsk offers 193 luxurious rooms in the Belorussian capital and stunning views of Minsk city from the hotel's 20th floor ..."
+        brand:
+          type: string
+          example: "Hilton"
+        address:
+          $ref: '#/components/schemas/Address'
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+        arrivalTime:
+          $ref: '#/components/schemas/ArrivalTime'
+        amenities:
+          type: array
+          items:
+            type: string
+          example:
+            - "Free parking"
+            - "Free WiFi"
+            - "Non-smoking rooms"
+    HotelCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "DoubleTree by Hilton Minsk"
+        description:
+          type: string
+          example: "The DoubleTree by Hilton Hotel Minsk offers 193 luxurious rooms in the Belorussian capital and stunning views of Minsk city from the hotel's 20th floor ..."
+        brand:
+          type: string
+          example: "Hilton"
+        address:
+          $ref: '#/components/schemas/Address'
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+        arrivalTime:
+          $ref: '#/components/schemas/ArrivalTime'
+    Address:
+      type: object
+      properties:
+        houseNumber:
+          type: integer
+          example: 9
+        street:
+          type: string
+          example: "Pobediteley Avenue"
+        city:
+          type: string
+          example: "Minsk"
+        country:
+          type: string
+          example: "Belarus"
+        postCode:
+          type: string
+          example: "220004"
+    Contacts:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+375 17 309-80-00"
+        email:
+          type: string
+          example: "doubletreeminsk.info@hilton.com"
+    ArrivalTime:
+      type: object
+      properties:
+        checkIn:
+          type: string
+          example: "14:00"
+        checkOut:
+          type: string
+          example: "12:00"
