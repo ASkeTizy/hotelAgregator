@@ -22,6 +22,8 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
 
+
+
     public List<HotelBrief> getAllHotels() {
         return hotelRepository.findAll().stream()
             .map(hotelMapper::toHotelBrief)

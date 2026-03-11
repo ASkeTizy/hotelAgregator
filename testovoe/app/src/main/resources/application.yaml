@@ -9,12 +9,24 @@ management:
   endpoint:
     health:
       show-details: always
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 
+    url: /api.yaml
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
 spring:
   datasource:
-
+    schema: HOTELS
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog.xml
-    default-schema: hotels
+    default-schema: HOTELS
+  jpa:
+    properties:
+      hibernate:
+        default_schema: HOTELS
 
