@@ -73,6 +73,17 @@
     </dependencyManagement>
 
     <build>
+        <plugins> <!-- Активные плагины -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>o.e.app.Application</mainClass>
+                    <classesDirectory>${project.basedir}/app/target/classes</classesDirectory>
+                </configuration>
+            </plugin>
+
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -83,4 +94,25 @@
             </plugins>
         </pluginManagement>
     </build>
+    <profiles>
+        <profile>
+            <id>app</id>
+            <build>
+                <defaultGoal>spring-boot:run</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <!-- Путь к Main классу в модуле app -->
+                            <mainClass>o.e.app.Application</mainClass>
+                            <!-- Важно: указываем, где искать классы -->
+                            <classesDirectory>${project.basedir}/app/target/classes</classesDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

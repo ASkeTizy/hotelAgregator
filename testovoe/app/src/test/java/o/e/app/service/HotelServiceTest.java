@@ -186,29 +186,32 @@ public class HotelServiceTest {
     @Test
     void getHistogram_shouldReturnBrandHistogram() {
         // Given
-        List<HotelEntity> hotelEntities = Arrays.asList(hotelEntity, hotelEntity);
-        when(hotelRepository.findAll()).thenReturn(hotelEntities);
+        List<Object[]> mockDbResult = Collections.singletonList(new Object[]{"Hilton", 1L});
+
+        // Мокаем именно тот метод, который вызывается в switch-case!
+        when(hotelRepository.countByBrand()).thenReturn(mockDbResult);
 
         // When
         Map<String, Integer> result = hotelService.getHistogram("brand");
 
         // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(2, result.get("Test Brand"));
+        assertEquals(1, result.get("Hilton"));
     }
 
     @Test
     void getHistogram_shouldReturnAmenitiesHistogram() {
-        // Given
-        hotelEntity.setAmenities(Arrays.asList("WiFi", "Parking", "WiFi"));
-        List<HotelEntity> hotelEntities = Arrays.asList(hotelEntity);
-        when(hotelRepository.findAll()).thenReturn(hotelEntities);
+        Object[] row1 = new Object[]{"WiFi", 2L};
+        Object[] row2 = new Object[]{"Parking", 1L};
 
-        // When
+        List<Object[]> mockDbResult = Arrays.asList(row1, row2);
+
+        // 2. Мокаем метод, который реально вызывается в switch-case
+        when(hotelRepository.countByAmenities()).thenReturn(mockDbResult);
+
+        // 3. Вызываем сервис
         Map<String, Integer> result = hotelService.getHistogram("amenities");
 
-        // Then
+        // 4. Проверяем
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals(2, result.get("WiFi"));

@@ -30,7 +30,7 @@ public class HotelSpecification  {
             }
 
             if (amenities != null && !amenities.isEmpty()) {
-                predicates.add(cb.isTrue(root.join("amenities").in(amenities)));
+                predicates.add(cb.equal(root.join("amenities"), amenities));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
