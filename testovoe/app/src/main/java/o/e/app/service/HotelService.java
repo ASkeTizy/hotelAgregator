@@ -11,6 +11,7 @@ import o.e.app.repository.HotelSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class HotelService {
         HotelEntity entity = hotelRepository.findById(id).orElse(null);
         if (entity != null) {
             if (entity.getAmenities() == null) {
-                entity.setAmenities(amenities);
+                entity.setAmenities(new ArrayList<>(amenities));
             } else {
                 entity.getAmenities().addAll(amenities);
             }
@@ -73,7 +74,8 @@ public class HotelService {
         return result.stream()
                 .collect(Collectors.toMap(
                         row -> row[0].toString(),
-                        row -> ((Long) row[1]).intValue()
+                        row -> ((Number) row[1]).intValue(), // Используем Number для безопасности
+                        (existing, replacement) -> existing
                 ));
     };
     }
