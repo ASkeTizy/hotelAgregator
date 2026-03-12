@@ -63,32 +63,20 @@ public class HotelService {
     }
 
     public Map<String, Integer> getHistogram(String param) {
-        return switch (param.toLowerCase()) {
-            case "brand" -> hotelRepository.findAll().stream()
-                .collect(Collectors.groupingBy(
-                        HotelEntity::getBrand,
-                    Collectors.summingInt(hotel -> 1)
-                ));
-            case "city" -> hotelRepository.findAll().stream()
-                .filter(hotel -> hotel.getAddress() != null && hotel.getAddress().getCity() != null)
-                .collect(Collectors.groupingBy(
-                    hotel -> hotel.getAddress().getCity(),
-                    Collectors.summingInt(hotel -> 1)
-                ));
-            case "country" -> hotelRepository.findAll().stream()
-                .filter(hotel -> hotel.getAddress() != null && hotel.getAddress().getCountry() != null)
-                .collect(Collectors.groupingBy(
-                    hotel -> hotel.getAddress().getCountry(),
-                    Collectors.summingInt(hotel -> 1)
-                ));
-            case "amenities" -> hotelRepository.findAll().stream()
-                .filter(hotel -> hotel.getAmenities() != null)
-                .flatMap(hotel -> hotel.getAmenities().stream())
-                .collect(Collectors.groupingBy(
-                    amenity -> amenity,
-                    Collectors.summingInt(amenity -> 1)
-                ));
+        List<Object[]> result = switch (param.toLowerCase()) {
+            case "brand" -> hotelRepository.countByBrand();
+            case "city" -> hotelRepository.countByCity();
+            case "country" -> hotelRepository.countByCountry();
+            case "amenities" -> hotelRepository.countByAmenities();
             default -> throw new IllegalArgumentException("Invalid parameter: " + param);
         };
+        return result.stream()
+                .collect(Collectors.toMap(
+                        row -> row[0].toString(),
+                        row -> ((Long) row[1]).intValue()
+                ));
+    };
     }
-}
+
+
+

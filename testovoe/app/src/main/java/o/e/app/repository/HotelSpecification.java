@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HotelSpecification {
+public class HotelSpecification  {
 
     public static Specification<HotelEntity> searchHotels(String name, String brand, String city, String country, String amenities) {
         return (root, query, cb) -> {
